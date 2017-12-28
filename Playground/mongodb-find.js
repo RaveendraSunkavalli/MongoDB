@@ -28,6 +28,13 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp',(err,db)=>{
     },(err)=>{
         console.log(err);
     });
+
+    myDB.collection("Todos").find().count().then((count)=>{
+        console.log("Todos count:",count);
+        
+    },(err)=>{
+        console.log(err);
+    });
     db.close();
 });
 
