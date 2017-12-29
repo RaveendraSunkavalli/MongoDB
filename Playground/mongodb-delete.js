@@ -11,7 +11,12 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp',(err,db)=>{
     // },(err)=>{
     //     console.log(err);
     // });
-    myDB.collection('Todos').deleteOne({text:'Walk the dog'}).then((res)=>{
+    // myDB.collection('Todos').deleteOne({text:'Walk the dog'}).then((res)=>{
+    //     console.log(res);
+    // },(err)=>{
+    //     console.log(err);
+    // });
+    myDB.collection('Todos').findOneAndDelete({text:'Walk the dog'}).then((res)=>{
         console.log(res);
     },(err)=>{
         console.log(err);
