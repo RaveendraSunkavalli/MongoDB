@@ -7,19 +7,23 @@ mongoose.connect('mongodb://localhost:27017/TodoApp');
 var Todo=mongoose.model('Todo',{
     text:{
         type:String,
+        required:true,
+        minLength:1,
+        trim:true 
     },
     completed:{
         type:Boolean,
+        default:true
     },
     completedAt:{
-        type:Number
+        type:Number,
+        default:0
     }
 });
 
 var newTodo=new Todo({
-    text:"Eating",
-    completed:true,
-    completedAt:20
+    text:"Something to do"
+
 });
 
 newTodo.save().then((res)=>{
