@@ -9,7 +9,7 @@ var Todo = mongoose.model('Todo', {
     },
     completed: {
         type: Boolean,
-        default: true
+        default:false
     },
     completedAt: {
         type: Number,
@@ -17,16 +17,7 @@ var Todo = mongoose.model('Todo', {
     }
 });
 
-var newTodo = new Todo({
-    text: "Something to do"
 
-});
-
-newTodo.save().then((res) => {
-    console.log(res);
-}, (err) => {
-    console.log(err);
-});
 
 module.exports={
     Todo,
