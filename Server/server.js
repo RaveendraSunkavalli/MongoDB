@@ -14,7 +14,7 @@ app.post('/todos',(req,res)=>{
     todo.save().then((doc)=>{
         res.send(doc);
     },(err)=>{
-        res.status(400).send(e);
+        res.status(400).send(err);
 
     });
 });
@@ -35,5 +35,6 @@ app.post('/user',(req,res)=>{
 
 app.listen(3000,()=>{
     console.log("connected to localhost");
-}
-)
+});
+ module.exports={app};
+
