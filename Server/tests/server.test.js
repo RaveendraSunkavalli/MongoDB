@@ -110,3 +110,44 @@ describe('get/todos/id',()=>{
         .end(done)
     });
 });
+
+
+describe('Delete/todos/:id',()=>{
+    it('Should delete todos',(done)=>{
+        
+        request(app)
+        .delete(`/todos/${todos[0]._id.toHexString()}`)
+        .expect(200)
+        .expect((res)=>{
+            expect(res.body._id).toBe(`${todos[0]._id.toHexString()}`);
+        })
+        .end((err,res)=>{
+            if(err){
+                return done(err);
+            }
+            Todo.findById(`${todos[0]._id.toHexString()}`).then(doc=>{
+                expect(doc).toNotExist();
+                done();
+            }).catch((e) => done(e));
+        })
+    });
+    it("Should get invalid error message",(done)=>{
+        request(app)
+        .delete(`/todos/123`)
+        .expect(404)
+        .expect((res)=>{
+            expect(res.body).toEqual({});
+        })
+        .end(done)
+    });
+    it("Should get invalid error message",(done)=>{
+        var id=new ObjectID().toHexString();
+        request(app)
+        .delete(`/todos/${id}`)
+        .expect(400)
+        .expect((res)=>{
+            expect(res.body).toEqual({});
+        })
+        .end(done)
+    });
+});
