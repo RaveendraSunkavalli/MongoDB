@@ -1,6 +1,8 @@
 
 const express=require('express');
-const bodyParser=require("body-parser")
+const bodyParser=require("body-parser");
+const {ObjectID}=require('mongodb');
+
 
 var {mongoose}=require("./db/mongoose");
 var {Todo}=require('./Models/Todos');
@@ -38,6 +40,21 @@ app.get('/todos',(req,res)=>{
     });
 });
 
+app.get('/todos/:id',(req,res)=>{
+    var id=req.params.id;
+    ObjectID.isValid(id)
+    if(ObjectID.isValid(id)){
+        Todo.findById(id).then((doc)=>{
+            if(!doc){
+                res.status(400).send("Id not found")
+            }else
+                res.send(doc);
+        }),(err=>{
+            res.status(400).send(err);
+        });
+    }else
+        res.status(404).send("invaild id");
+});
 
 app.listen(3000,()=>{
     console.log("connected to localhost");
