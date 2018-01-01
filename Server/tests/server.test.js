@@ -1,6 +1,6 @@
 const expect = require('expect');
 const request = require('supertest');
-
+const {ObjectID}=require('mongodb');
 
 const {app} = require('./../server');
 const {Todo} = require('./../Models/Todos');
@@ -11,8 +11,10 @@ const {Todo} = require('./../Models/Todos');
 // });
 
 const todos=[{
+    _id:new ObjectID(),
     text:"First test to do"
 },{
+    _id:new ObjectID(),
     text:"Second test todo"
 }];
 
@@ -73,5 +75,38 @@ describe('Get/todos',()=>{
             expect(res.body.length).toBe(2)
         })
         .end(done);
+    });
+});
+
+
+describe('get/todos/id',()=>{
+    it("Should get todo",(done)=>{
+        request(app)
+        .get(`/todos/${todos[0]._id.toHexString()}`)
+        .expect(200)
+        .expect((res)=>{
+            expect(res.body.text).toBe(todos[0].text);
+       })
+       .end(done);
+
+    });
+    it("Should get invalid error message",(done)=>{
+        request(app)
+        .get(`/todos/123`)
+        .expect(404)
+        .expect((res)=>{
+            expect(res.body).toEqual({});
+        })
+        .end(done)
+    });
+    it("Should get invalid error message",(done)=>{
+        var id=new ObjectID().toHexString();
+        request(app)
+        .get(`/todos/${id}`)
+        .expect(400)
+        .expect((res)=>{
+            expect(res.body).toEqual({});
+        })
+        .end(done)
     });
 });

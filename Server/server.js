@@ -46,14 +46,14 @@ app.get('/todos/:id',(req,res)=>{
     if(ObjectID.isValid(id)){
         Todo.findById(id).then((doc)=>{
             if(!doc){
-                res.status(400).send("Id not found")
+                res.status(400).send();
             }else
                 res.send(doc);
         }),(err=>{
             res.status(400).send(err);
         });
     }else
-        res.status(404).send("invaild id");
+        res.status(404).send();
 });
 
 app.listen(3000,()=>{
