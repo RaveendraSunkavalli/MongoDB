@@ -96,7 +96,7 @@ app.patch('/todos/:id',(req,res)=>{
         body.completedAt=new Date().getTime();
     }
     else{
-        body.completedAt=0;   
+        body.completedAt=null;   
         body.completed=false;
     }
 
