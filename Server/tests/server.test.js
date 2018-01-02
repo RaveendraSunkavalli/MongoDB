@@ -12,10 +12,15 @@ const {Todo} = require('./../Models/Todos');
 
 const todos=[{
     _id:new ObjectID(),
-    text:"First test to do"
+    text:"First test to do",
+    
+    
 },{
     _id:new ObjectID(),
-    text:"Second test todo"
+    text:"Second test todo",
+    completed:true,
+    completedAt:12123
+
 }];
 
 
@@ -150,4 +155,30 @@ describe('Delete/todos/:id',()=>{
         })
         .end(done)
     });
+});
+
+describe('Patch/todos/:id',()=>{
+    it('Should update todos',(done)=>{
+       request(app)
+        .patch(`/todos/${todos[0]._id.toHexString()}`)
+        .send({completed:true})
+        .expect(200)
+        .expect((res)=>{
+            expect(res.body.completed).toBe(true);
+            expect(res.body.completedAt).toBeA('number');
+        })
+        .end(done)
+    });
+    it("Should get invalid error message",(done)=>{
+        request(app)
+        .patch(`/todos/${todos[1]._id.toHexString()}`)
+        .send({completed:false})
+        .expect(200)
+        .expect((res)=>{
+            expect(res.body.completed).toBe(false);
+            expect(res.body.completedAt).toNotExist();
+        })
+        .end(done)
+    });
+    
 });
