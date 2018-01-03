@@ -1,5 +1,6 @@
 
-const _=require('lodash');
+const config=require("./Config/config");
+const _ = require('lodash');
 const express = require('express');
 const bodyParser = require("body-parser");
 const {
@@ -19,7 +20,7 @@ var {
 var app = express();
 
 
-var port=process.env.PORT|| 3000;
+var port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 app.post('/todos', (req, res) => {
@@ -46,7 +47,7 @@ app.post('/user', (req, res) => {
     });
 });
 app.get('/todos', (req, res) => {
-    
+
     Todo.find().then((doc) => {
         res.send(doc);
     }, err => {
@@ -71,49 +72,51 @@ app.get('/todos/:id', (req, res) => {
 });
 
 
-app.delete('/todos/:id',(req,res)=>{
-    var id=req.params.id;
-    if(!ObjectID.isValid(id))
+app.delete('/todos/:id', (req, res) => {
+    var id = req.params.id;
+    if (!ObjectID.isValid(id))
         return res.status(404).send();
-    Todo.findByIdAndRemove(id).then((doc)=>{
-        if(!doc){
+    Todo.findByIdAndRemove(id).then((doc) => {
+        if (!doc) {
             res.status(400).send();
-        }
-        else{
+        } else {
             res.send(doc);
         }
-    },err=>{
+    }, err => {
         res.status(404).send();
     });
 });
 
-app.patch('/todos/:id',(req,res)=>{
-    var id=req.params.id;
-    var body=_.pick(req.body,['text','completed']);
-    if(!ObjectID.isValid(id))
+app.patch('/todos/:id', (req, res) => {
+    var id = req.params.id;
+    var body = _.pick(req.body, ['text', 'completed']);
+    if (!ObjectID.isValid(id))
         return res.status(404).send();
-    if(_.isBoolean(body.completed)&&body.completed){
-        body.completedAt=new Date().getTime();
-    }
-    else{
-        body.completedAt=null;   
-        body.completed=false;
+    if (_.isBoolean(body.completed) && body.completed) {
+        body.completedAt = new Date().getTime();
+    } else {
+        body.completedAt = null;
+        body.completed = false;
     }
 
-    Todo.findByIdAndUpdate(id,{$set:body},{new:true}).then((todo)=>{
-        if(!todo)
+    Todo.findByIdAndUpdate(id, {
+        $set: body
+    }, {
+        new: true
+    }).then((todo) => {
+        if (!todo)
             return res.status(400).send();
 
-            res.send(todo);
+        res.send(todo);
 
-        }).catch((err)=>{
-            res.status(404).send();    
-        });
+    }).catch((err) => {
+        res.status(404).send();
+    });
 
-    });   
+});
 
-app.listen(3000, () => {
-    console.log("connected to localhost");
+app.listen(port, () => {
+    console.log("connected to", port);
 });
 module.exports = {
     app
