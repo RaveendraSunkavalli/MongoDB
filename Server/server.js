@@ -1,5 +1,4 @@
-
-const config=require("./Config/config");
+const config = require("./Config/config");
 const _ = require('lodash');
 const express = require('express');
 const bodyParser = require("body-parser");
@@ -17,6 +16,8 @@ var {
 var {
     User
 } = require('./Models/Users');
+
+var {authenticate}=require('./Middleware/authenticate');
 var app = express();
 
 
@@ -24,19 +25,27 @@ var port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
-app.post('/user',(req,res)=>{
-    var body=_.pick(req.body,['email','password']);
-    
-    user =new User(body);
-    user.save().then((user)=>{
+app.post('/user', (req, res) => {
+    var body = _.pick(req.body, ['email', 'password']);
+
+    user = new User(body);
+    user.save().then((user) => {
         return user.generateAuthToken();
-        
-    }).then((token)=>{
-        res.header('x-auth',token).send(user);
-    }).catch((err)=>{
+
+    }).then((token) => {
+        res.header('x-auth', token).send(user);
+    }).catch((err) => {
         res.status(400).send(err)
     });
 });
+
+app.get('/user/me',authenticate, (req, res) => {
+  res.send(req.user);
+});
+
+
+
+
 
 app.post('/todos', (req, res) => {
     var todo = new Todo({
@@ -120,5 +129,3 @@ app.listen(port, () => {
 module.exports = {
     app
 };
-
-
