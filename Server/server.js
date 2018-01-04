@@ -23,6 +23,21 @@ var app = express();
 var port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
+
+app.post('/user',(req,res)=>{
+    var body=_.pick(req.body,['email','password']);
+    
+    user =new User(body);
+    user.save().then((user)=>{
+        return user.generateAuthToken();
+        
+    }).then((token)=>{
+        res.header('x-auth',token).send(user);
+    }).catch((err)=>{
+        res.status(400).send(err)
+    });
+});
+
 app.post('/todos', (req, res) => {
     var todo = new Todo({
         text: req.body.text
@@ -32,26 +47,6 @@ app.post('/todos', (req, res) => {
     }, (err) => {
         res.status(400).send(err);
 
-    });
-});
-
-app.post('/user', (req, res) => {
-
-    var usr = new User({
-        email: req.body.email
-    });
-    usr.save().then((doc) => {
-        res.send(doc);
-    }, (err) => {
-        res.status(400).send(err);
-    });
-});
-app.get('/todos', (req, res) => {
-
-    Todo.find().then((doc) => {
-        res.send(doc);
-    }, err => {
-        res.status(400).send(err);
     });
 });
 
@@ -115,9 +110,15 @@ app.patch('/todos/:id', (req, res) => {
 
 });
 
+
+
+
+
 app.listen(port, () => {
     console.log("connected to", port);
 });
 module.exports = {
     app
 };
+
+
