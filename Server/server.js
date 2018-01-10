@@ -58,6 +58,16 @@ app.post('/todos', (req, res) => {
 
     });
 });
+app.get('/todos', (req, res) => {
+    Todo.find().then((doc) => {
+            if (!doc) {
+                res.status(400).send();
+            } else
+                res.send(doc);
+        }), (err => {
+            res.status(404).send(err);
+        });
+});
 
 app.get('/todos/:id', (req, res) => {
     var id = req.params.id;
